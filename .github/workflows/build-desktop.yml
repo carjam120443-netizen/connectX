@@ -31,7 +31,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build application
+      - name: Build application and generate app icons
         run: npm run build
         env:
           VITE_API_URL: ${{ vars.VITE_API_URL }}
@@ -65,7 +65,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build application
+      - name: Build application and generate app icons
         run: npm run build
         env:
           VITE_API_URL: ${{ vars.VITE_API_URL }}
