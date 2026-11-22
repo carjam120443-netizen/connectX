@@ -33,6 +33,8 @@ jobs:
 
       - name: Build application
         run: npm run build
+        env:
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
 
       - name: Package Windows installers
         run: npx electron-builder --win nsis portable --publish never
