@@ -159,3 +159,6 @@ This is an early foundation, not a complete social platform yet:
 - `prisma/` — PostgreSQL schema, migration, and starter seed
 - `.github/workflows/` — Windows and Linux desktop build workflow
 - `docker-compose.yml` — local PostgreSQL and API services
+- ## goals ##
+- [x] start release packages
+
