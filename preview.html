@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101116">
+  <meta name="description" content="A visual preview of the ConnectX desktop chat interface.">
+  <title>ConnectX — App Preview</title>
+  <style>
+    :root{color-scheme:dark;--bg:#101116;--panel:#17181f;--panel2:#1d1e27;--line:#2b2c36;--muted:#858694;--text:#eeedf5;--purple:#927be7;--purple-soft:#302a49}
+    *{box-sizing:border-box}body{margin:0;min-width:320px;height:100vh;overflow:hidden;background:var(--bg);color:var(--text);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+    button,input{font:inherit}button{color:inherit;cursor:pointer}
+    .app{height:100vh;display:grid;grid-template-columns:68px 245px minmax(300px,1fr) 255px;background:#121319}
+    .rail{background:#0d0e13;border-right:1px solid #24252e;display:flex;align-items:center;flex-direction:column;padding:18px 0;gap:12px}
+    .logo{font-size:27px;font-weight:850;letter-spacing:-4px;margin:0 0 23px;color:#f4f1ff}.logo b{color:#a58fff}
+    .rail-btn,.icon-btn{width:40px;height:40px;border:0;border-radius:11px;background:transparent;color:#818391;display:grid;place-items:center}
+    .rail-btn:hover,.icon-btn:hover{background:#252631;color:white}.rail-btn.active{background:var(--purple-soft);color:#c5b7ff}.grow{flex:1}
+    .side{background:var(--panel);border-right:1px solid var(--line);padding:22px 14px 12px;display:flex;flex-direction:column;min-width:0}
+    .eyebrow,.section-label,.detail-label{font-size:10px;letter-spacing:1.2px;font-weight:750;color:#777987}
+    .space-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}.space-name{display:block;background:none;border:0;padding:4px 0 0;font-size:17px;font-weight:750;letter-spacing:-.4px}
+    .search{height:37px;border:1px solid #30313b;background:#20212a;border-radius:8px;display:flex;align-items:center;gap:8px;padding:0 10px;color:#898a98;font-size:11px;margin-bottom:27px}.search kbd{margin-left:auto;background:#30313b;border-radius:4px;padding:2px 5px;font-size:9px}
+    .section-label{margin:0 4px 9px}.channel{width:100%;border:0;background:transparent;border-radius:7px;color:#999aa6;padding:9px 10px;text-align:left;display:flex;gap:10px;align-items:center;font-size:12px}.channel:hover{background:#23242d;color:white}.channel.active{background:var(--purple-soft);color:#c6baff}.hash{color:#9990bd;font-size:17px;font-weight:600}
+    .subtle{font-size:10px;color:#696b78;padding:8px 10px;line-height:1.55}.dm-title{margin-top:27px}
+    .profile{margin-top:auto;border-top:1px solid var(--line);padding:13px 2px 0;display:flex;align-items:center;gap:9px}.avatar{width:32px;height:32px;border-radius:10px;background:#6553a5;color:white;display:grid;place-items:center;font-size:11px;font-weight:800;flex:none}.profile-copy{display:flex;flex-direction:column;flex:1;gap:2px}.profile-copy strong{font-size:11px}.profile-copy span{font-size:10px;color:#80c59b}
+    .chat{min-width:0;display:flex;flex-direction:column;background:#121319}.chat-head{height:66px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 22px;gap:12px}.channel-title{display:flex;align-items:center;gap:9px;min-width:0}.channel-title strong{font-size:13px}.topic{font-size:11px;color:#858694;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.head-actions{display:flex;gap:4px}
+    .feed{flex:1;overflow:auto;padding:25px 27px}.welcome{padding:18px 0 24px;border-bottom:1px solid var(--line);margin-bottom:17px}.welcome-icon{height:43px;width:43px;border-radius:13px;background:#29243d;color:#b8a8ff;display:grid;place-items:center;font-size:24px}.welcome h1{font-size:22px;letter-spacing:-.6px;margin:14px 0 4px}.welcome p{font-size:12px;color:#92939f;margin:0}
+    .message{display:flex;gap:12px;padding:11px 0}.message .avatar{height:34px;width:34px;border-radius:11px}.avatar.alt{background:#51436c;color:#e4d9ff}.meta{display:flex;align-items:center;gap:9px}.meta strong{font-size:12px}.meta time{font-size:10px;color:#777987}.message p{font-size:12px;color:#c2c1cb;margin:5px 0 0;line-height:1.65;overflow-wrap:anywhere}
+    .composer{margin:0 22px 9px;height:49px;border:1px solid #363742;background:var(--panel2);border-radius:10px;display:flex;align-items:center;gap:9px;padding:0 10px}.composer input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:white;font-size:12px}.composer input::placeholder{color:#777987}.send{height:31px;width:34px;border:0;border-radius:8px;background:#806bd0;color:white;font-size:17px}.note{text-align:center;color:#666875;font-size:9px;padding-bottom:10px}
+    .details{background:var(--panel);border-left:1px solid var(--line);padding:24px 16px}.detail-label{margin-bottom:15px}.space-card{border:1px solid #30313b;border-radius:11px;overflow:hidden;padding:0 13px 14px}.art{height:95px;margin:0 -13px 12px;display:grid;place-items:center;position:relative;overflow:hidden;background:radial-gradient(circle at 72% 25%,#7968b7,#44395f 35%,#29243a 75%)}.art:before,.art:after{content:"";position:absolute;width:150px;height:150px;border:1px solid #c0b2ff55;border-radius:50%}.art:after{width:105px;height:105px}.art span{z-index:1;font-size:36px;font-weight:850;letter-spacing:-4px}.space-card h2{font-size:15px;margin:0 0 5px}.space-card p{font-size:10px;color:#92939f;margin:0}.stats{display:flex;gap:35px;border-top:1px solid var(--line);margin-top:13px;padding-top:11px}.stats div{display:flex;flex-direction:column}.stats b{font-size:13px}.stats span{font-size:9px;color:#858694}.member-label{margin-top:26px}.member{display:flex;align-items:center;gap:9px}.member div:last-child{display:flex;flex-direction:column;min-width:0}.member strong{font-size:11px}.member span{font-size:9px;color:#858694;overflow-wrap:anywhere}.about{display:flex;gap:9px;align-items:center;background:#22232d;border-radius:8px;padding:11px;font-size:10px;color:#b7acd9}
+    .preview-tag{position:fixed;right:14px;bottom:13px;background:#29243a;border:1px solid #51436c;color:#d9d0ff;padding:6px 9px;border-radius:7px;font-size:9px;letter-spacing:.3px;pointer-events:none}
+    @media(max-width:1050px){.app{grid-template-columns:60px 220px minmax(280px,1fr)}.details{display:none}}
+    @media(max-width:650px){body{overflow:auto}.app{height:100dvh;min-height:560px;grid-template-columns:54px minmax(0,1fr)}.side{display:none}.chat-head{padding:0 14px}.feed{padding:18px 15px}.composer{margin-left:12px;margin-right:12px}.topic,.head-actions .optional{display:none}.details{display:none}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+  <main class="app" aria-label="ConnectX application preview">
+    <nav class="rail" aria-label="Main navigation">
+      <div class="logo" aria-label="ConnectX">c<b>.</b></div>
+      <button class="rail-btn active" aria-label="Messages" title="Messages">▤</button>
+      <button class="rail-btn" aria-label="Discover" title="Discover">⌕</button>
+      <button class="rail-btn" aria-label="Activity" title="Activity">◷</button>
+      <div class="grow"></div>
+      <button class="rail-btn" aria-label="Notifications" title="Notifications">♧</button>
+      <button class="rail-btn" aria-label="Settings" title="Settings">⚙</button>
+      <div class="avatar">C</div>
+    </nav>
+
+    <aside class="side">
+      <div class="space-top"><div><div class="eyebrow">YOUR SPACE</div><button class="space-name">The Workshop⌄</button></div><button class="icon-btn" aria-label="Space options">＋</button></div>
+      <div class="search"><span>⌕</span><span>Find a conversation</span><kbd>Ctrl K</kbd></div>
+      <div class="section-label">CHANNELS</div>
+      <button class="channel active" data-channel="general"><span class="hash">#</span>general</button>
+      <button class="channel" data-channel="introductions"><span class="hash">#</span>introductions</button>
+      <button class="channel" data-channel="tech-talk"><span class="hash">#</span>tech-talk</button>
+      <button class="channel" data-channel="showcase"><span class="hash">#</span>showcase</button>
+      <div class="subtle">A small corner of the internet to share ideas and talk.</div>
+      <div class="section-label dm-title">DIRECT MESSAGES</div>
+      <div class="subtle">Direct messages are on the roadmap.</div>
+      <div class="profile"><div class="avatar">C</div><div class="profile-copy"><strong>carson</strong><span>Preview profile</span></div><button class="icon-btn" aria-label="Profile options">···</button></div>
+    </aside>
+
+    <section class="chat">
+      <header class="chat-head"><div class="channel-title"><span class="hash">#</span><strong id="channel-name">general</strong><span class="topic">| &nbsp;The place for everyday conversation.</span></div><div class="head-actions"><button class="icon-btn optional" aria-label="Members">♙</button><button class="icon-btn" aria-label="Search">⌕</button><button class="icon-btn optional" aria-label="Notifications">♧</button></div></header>
+      <div class="feed" id="feed">
+        <div class="welcome"><div class="welcome-icon">#</div><h1 id="welcome-title">Welcome to #general</h1><p>This is the beginning of the conversation.</p></div>
+        <article class="message"><div class="avatar alt">M</div><div><div class="meta"><strong>mira</strong><time>09:41 AM</time></div><p>Hey everyone! Welcome to The Workshop.</p></div></article>
+        <article class="message"><div class="avatar">C</div><div><div class="meta"><strong>carson</strong><time>09:43 AM</time></div><p>Been working on ConnectX. Keeping it small, simple, and community-focused.</p></div></article>
+        <article class="message"><div class="avatar alt">M</div><div><div class="meta"><strong>mira</strong><time>09:45 AM</time></div><p>The dark theme and purple accents are looking clean.</p></div></article>
+      </div>
+      <form class="composer" id="composer"><button class="icon-btn" type="button" aria-label="Add attachment" disabled>＋</button><input id="message-input" maxlength="2000" autocomplete="off" placeholder="Message #general" aria-label="Write a preview message"><button class="send" type="submit" aria-label="Send preview message">↑</button></form>
+      <div class="note">ConnectX · A small place to connect</div>
+    </section>
+
+    <aside class="details">
+      <div class="detail-label">SPACE DETAILS</div>
+      <div class="space-card"><div class="art"><span>cx</span></div><h2>The Workshop</h2><p>A place to build things, share ideas, and connect.</p><div class="stats"><div><b>1</b><span>Space</span></div><div><b>4</b><span>Channels</span></div></div></div>
+      <div class="detail-label member-label">YOUR ACCOUNT</div>
+      <div class="member"><div class="avatar">C</div><div><strong>carson</strong><span>carson@example.test</span></div></div>
+      <div class="detail-label member-label">ABOUT CONNECTX</div>
+      <div class="about"><span>◇</span><span>Built for smaller, friendlier communities.</span></div>
+    </aside>
+  </main>
+  <div class="preview-tag">INTERACTIVE UI PREVIEW · SAMPLE DATA</div>
+  <script>
+    const channelNames = ["general","introductions","tech-talk","showcase"];
+    const channelButtons = [...document.querySelectorAll("[data-channel]")];
+    const channelName = document.querySelector("#channel-name");
+    const welcomeTitle = document.querySelector("#welcome-title");
+    const input = document.querySelector("#message-input");
+    const feed = document.querySelector("#feed");
+    channelButtons.forEach(button => button.addEventListener("click", () => {
+      const name = button.dataset.channel;
+      channelButtons.forEach(item => item.classList.toggle("active", item === button));
+      channelName.textContent = name;
+      welcomeTitle.textContent = "Welcome to #" + name;
+      input.placeholder = "Message #" + name;
+    }));
+    document.querySelector("#composer").addEventListener("submit", event => {
+      event.preventDefault();
+      const content = input.value.trim();
+      if (!content) return;
+      const article = document.createElement("article");
+      article.className = "message";
+      const avatar = document.createElement("div");
+      avatar.className = "avatar";
+      avatar.textContent = "C";
+      const body = document.createElement("div");
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      const author = document.createElement("strong");
+      author.textContent = "carson (preview)";
+      const time = document.createElement("time");
+      time.textContent = new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
+      meta.append(author,time);
+      const paragraph = document.createElement("p");
+      paragraph.textContent = content;
+      body.append(meta,paragraph);
+      article.append(avatar,body);
+      feed.append(article);
+      input.value = "";
+      feed.scrollTop = feed.scrollHeight;
+    });
+  </script>
+</body>
+</html>
