@@ -98,14 +98,12 @@
           ]
         }
       ],
-      "category": "Network;Chat",
-      "syncDesktopName": true
+      "category": "Network;Chat"
     }
   },
   "type": "module",
   "author": {
     "name": "carjam120443-netizen",
     "email": "carjam120443-netizen@users.noreply.github.com"
-  },
-  "desktopName": "net.carjam120443.connectx"
+  }
 }
