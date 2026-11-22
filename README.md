@@ -2,6 +2,10 @@
 
 a small place to connect
 
+<p align="center">
+  <img src="branding/connectx-readme.svg" alt="connectX logo: an X connected by a cable to a server rack" width="100%" />
+</p>
+
 ConnectX is an original, desktop-first community chat app for Windows and Linux. A browser version can use the same API later.
 
 ## What's implemented
