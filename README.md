@@ -57,6 +57,7 @@ ConnectX is an original, desktop-first community chat app for Windows and Linux.
 5. Apply the database migration and create the starter space:
 
    ```powershell
+   npm run db:generate
    npm run db:deploy
    npm run db:seed
    ```
