@@ -25,7 +25,7 @@ const io = new SocketServer(server, {
 const PORT = Number(process.env.PORT || 4000);
 const JWT_SECRET = process.env.JWT_SECRET;
 
-if (!JWT_SECRET || JWT_SECRET.length < 32) {
+if (!JWT_SECRET || JWT_SECRET.length < 32 || JWT_SECRET.startsWith("replace-this")) {
   throw new Error("JWT_SECRET must be set to a random value at least 32 characters long.");
 }
 
@@ -78,9 +78,12 @@ app.post("/api/auth/register", authLimiter, async (req, res) => {
   const email = parsed.data.email.toLowerCase();
   try {
     const passwordHash = await bcrypt.hash(parsed.data.password, 12);
-    const user = await prisma.user.create({ data: { username, email, passwordHash } });
     const space = await prisma.space.findFirst({ orderBy: { createdAt: "asc" } });
-    if (space) await prisma.membership.create({ data: { userId: user.id, spaceId: space.id } });
+    const user = await prisma.$transaction(async (tx) => {
+      const created = await tx.user.create({ data: { username, email, passwordHash } });
+      if (space) await tx.membership.create({ data: { userId: created.id, spaceId: space.id } });
+      return created;
+    });
     const safeUser = { id: user.id, username: user.username, email: user.email };
     res.status(201).json({ token: signToken(user), user: safeUser });
   } catch (error) {
