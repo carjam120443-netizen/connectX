@@ -3,7 +3,7 @@ import {
   Activity, Bell, ChevronDown, Compass, Hash, LogOut, MessageCircle,
   Plus, Search, Send, Settings, Shield, Users
 } from "lucide-react";
-import { api, API_BASE, connectSocket } from "./api.js";
+import { api, getApiBase, connectSocket } from "./api.js";
 
 function formatTime(value) {
   return new Date(value).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -16,6 +16,7 @@ export default function App() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [serverUrl, setServerUrl] = useState(() => getApiBase());
   const [authBusy, setAuthBusy] = useState(false);
   const [booting, setBooting] = useState(true);
   const [spaces, setSpaces] = useState([]);
@@ -94,6 +95,18 @@ export default function App() {
   async function submitAuth(event) {
     event.preventDefault();
     setError("");
+    let parsedServer;
+    try {
+      parsedServer = new URL(serverUrl.trim());
+      const isLocal = ["localhost", "127.0.0.1", "::1"].includes(parsedServer.hostname);
+      if (parsedServer.protocol !== "https:" && !(isLocal && parsedServer.protocol === "http:")) {
+        throw new Error("Use HTTPS for a remote server. HTTP is only allowed for localhost.");
+      }
+      localStorage.setItem("connectx_api_url", parsedServer.origin);
+    } catch (err) {
+      setError(err.message || "Enter a valid server URL.");
+      return;
+    }
     setAuthBusy(true);
     try {
       const path = authMode === "register" ? "/api/auth/register" : "/api/auth/login";
@@ -154,6 +167,7 @@ export default function App() {
           <p className="auth-subtitle">{authMode === "register" ? "Make an account and join the conversation." : "Sign in to pick up where the conversation left off."}</p>
           <form className="auth-form" onSubmit={submitAuth}>
             {authMode === "register" && <label>Username<input value={username} onChange={(event) => setUsername(event.target.value)} minLength={3} maxLength={24} pattern="[A-Za-z0-9_]+" autoComplete="username" required placeholder="your_username"/></label>}
+            <label>Server address<input type="url" value={serverUrl} onChange={(event) => setServerUrl(event.target.value)} required placeholder="https://chat.example.com"/></label>
             <label>Email<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" required placeholder="you@example.com"/></label>
             <label>Password<input type="password" value={password} onChange={(event) => setPassword(event.target.value)} minLength={authMode === "register" ? 10 : 1} maxLength={72} autoComplete={authMode === "register" ? "new-password" : "current-password"} required placeholder={authMode === "register" ? "At least 10 characters" : "Your password"}/></label>
             {error && <div className="auth-error" role="alert">{error}</div>}
@@ -162,7 +176,7 @@ export default function App() {
           <button className="auth-switch" onClick={() => { setAuthMode(authMode === "register" ? "login" : "register"); setError(""); }}>
             {authMode === "register" ? "Already have an account? Sign in" : "New to ConnectX? Create an account"}
           </button>
-          <div className="auth-server">API: {API_BASE}</div>
+          <div className="auth-server">Your server address is saved on this device. Remote servers must use HTTPS.</div>
         </section>
       </main>
     );
