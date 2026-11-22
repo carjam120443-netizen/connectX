@@ -100,5 +100,6 @@
       ],
       "category": "Network;Chat"
     }
-  }
+  },
+  "type": "module"
 }
