@@ -14,8 +14,13 @@ const prisma = new PrismaClient();
 const app = express();
 const server = http.createServer(app);
 const allowedOrigins = (process.env.WEB_ORIGIN || "http://127.0.0.1:5173,http://localhost:5173").split(",").map((v) => v.trim());
+const isAllowedOrigin = (origin, callback) => {
+  // Electron file:// renderers report the opaque origin "null".
+  if (!origin || origin === "null" || allowedOrigins.includes(origin)) return callback(null, true);
+  return callback(new Error("Origin is not allowed by ConnectX."));
+};
 const io = new SocketServer(server, {
-  cors: { origin: allowedOrigins, methods: ["GET", "POST"] }
+  cors: { origin: isAllowedOrigin, methods: ["GET", "POST"] }
 });
 const PORT = Number(process.env.PORT || 4000);
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -25,7 +30,7 @@ if (!JWT_SECRET || JWT_SECRET.length < 32) {
 }
 
 app.use(helmet());
-app.use(cors({ origin: allowedOrigins }));
+app.use(cors({ origin: isAllowedOrigin }));
 app.use(express.json({ limit: "32kb" }));
 
 const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, limit: 20, standardHeaders: "draft-8", legacyHeaders: false });
