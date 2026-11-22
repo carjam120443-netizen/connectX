@@ -43,3 +43,12 @@ button{color:inherit;cursor:pointer}
 .inline-error button{border:0;background:none;color:#ffd2d6;font-size:10px;text-decoration:underline}
 .empty-sidebar-note{font-size:10px;line-height:1.5;color:#666875;padding:7px 9px}
 button:disabled{cursor:not-allowed;opacity:.45}
+
+
+/* Offline guest preview */
+.auth-separator{display:flex;align-items:center;gap:12px;margin:20px 0 13px;color:#666875;font-size:9px;letter-spacing:1px}
+.auth-separator:before,.auth-separator:after{content:"";height:1px;background:#30303a;flex:1}
+.guest-submit{width:100%;height:42px;border:1px solid #514875;border-radius:8px;background:#242132;color:#d4caff;font-size:12px;font-weight:700;transition:.16s}
+.guest-submit:hover{background:#302a46;border-color:#806bd0}
+.guest-explainer{font-size:9px;line-height:1.5;color:#777987;text-align:center;margin-top:9px}
+.guest-banner{padding:9px 22px;background:#29243a;border-bottom:1px solid #494064;color:#cbbfff;font-size:10px;text-align:center}
