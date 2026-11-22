@@ -1,4 +1,4 @@
-name: Build desktop installers
+name: Build and release desktop installers
 
 on:
   workflow_dispatch:
@@ -9,33 +9,102 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: desktop-release-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   windows:
+    name: Build Windows installers
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm install
-      - run: npm run build
-      - run: npx electron-builder --win nsis portable
-      - uses: actions/upload-artifact@v4
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build application
+        run: npm run build
+
+      - name: Package Windows installers
+        run: npx electron-builder --win nsis portable
+
+      - name: Upload Windows installers
+        uses: actions/upload-artifact@v4
         with:
           name: connectx-windows
-          path: release/*
+          path: |
+            release/*.exe
+            release/*.blockmap
+            release/latest.yml
+          if-no-files-found: error
+          retention-days: 14
 
   linux:
+    name: Build Linux packages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm install
-      - run: npm run build
-      - run: npx electron-builder --linux AppImage deb
-      - uses: actions/upload-artifact@v4
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build application
+        run: npm run build
+
+      - name: Package Linux installers
+        run: npx electron-builder --linux AppImage deb
+
+      - name: Upload Linux packages
+        uses: actions/upload-artifact@v4
         with:
           name: connectx-linux
-          path: release/*
+          path: |
+            release/*.AppImage
+            release/*.deb
+            release/latest-linux.yml
+          if-no-files-found: error
+          retention-days: 14
+
+  release:
+    name: Publish GitHub Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs:
+      - windows
+      - linux
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download all installer artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: connectx-*
+          path: release-files
+          merge-multiple: true
+
+      - name: Publish release and attach installers
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ConnectX ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          generate_release_notes: true
+          files: |
+            release-files/*.exe
+            release-files/*.blockmap
+            release-files/*.AppImage
+            release-files/*.deb
