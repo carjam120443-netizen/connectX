@@ -2,53 +2,155 @@
 
 a small place to connect
 
-ConnectX is an original social and community platform being built desktop-first for Windows and Linux, with a web version planned later.
+ConnectX is an original, desktop-first community chat app for Windows and Linux. A browser version can use the same API later.
 
-## Current status
+## What's implemented
 
-This repository contains the first desktop application scaffold and an interactive UI prototype.
-
-- Original dark visual identity
-- Space and channel navigation mockup
-- Direct-message list mockup
-- Local in-window message composer
-- Electron desktop shell with context isolation, sandboxing, and Node integration disabled
-
-**Not implemented yet:** accounts, persistent messages, networking, real-time presence, friends, invitations, or moderation. The starter messages are demo data and messages sent in the UI are not saved.
+- React + Electron desktop client with an original dark UI
+- Account registration and sign-in
+- Password hashing with bcrypt
+- PostgreSQL database through Prisma
+- Starter space and channels
+- Persistent channel message history
+- Live channel message delivery with Socket.IO
+- Per-user space membership checks
+- Request validation, authentication rate limits, message rate limits, and Helmet security headers
+- A server URL field on the sign-in screen, so installed clients can connect to a separately hosted ConnectX server
+- Windows NSIS installer and portable executable build targets
+- Linux AppImage and Debian package build targets
+- GitHub Actions workflow to build desktop packages
 
 ## Requirements
 
-- Node.js 20.19+ or 22.12+
+- Node.js 22.12+ recommended
+- Docker Desktop (or another PostgreSQL 17 server)
 - npm
 
-## Run in development
+## Run locally on Windows
+
+1. Clone the repository and install packages:
+
+   ```powershell
+   git clone https://github.com/carjam120443-netizen/connectX.git
+   cd connectX
+   npm install
+   ```
+
+2. Create your local environment file:
+
+   ```powershell
+   Copy-Item .env.example .env
+   ```
+
+3. Edit `.env`. Set `POSTGRES_PASSWORD` to a password of your choice, make the password in `DATABASE_URL` match it, and replace `JWT_SECRET` with a long random secret. Generate one with:
+
+   ```powershell
+   node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
+   ```
+
+4. Start PostgreSQL:
+
+   ```powershell
+   docker compose up -d db
+   ```
+
+5. Apply the database migration and create the starter space:
+
+   ```powershell
+   npm run db:deploy
+   npm run db:seed
+   ```
+
+6. Start the API, Vite, and Electron together:
+
+   ```powershell
+   npm run dev
+   ```
+
+The desktop app opens on the sign-in screen. Create an account; it will be added to the starter space.
+
+### Run the API and database in Docker
+
+After configuring `.env`, run:
+
+```powershell
+docker compose up --build -d
+```
+
+This starts PostgreSQL and the API container. In a second terminal, run only the desktop client:
+
+```powershell
+npm run dev:desktop
+```
+
+To stop the services:
+
+```powershell
+docker compose down
+```
+
+Use `docker compose down -v` only if you intentionally want to delete the local PostgreSQL data volume.
+
+## Desktop builds
+
+Builds are written to the `release/` folder.
+
+### Windows
+
+```powershell
+npm install
+npm run dist:win
+```
+
+This creates:
+- **NSIS setup installer** — normal install flow, Start Menu shortcut, Desktop shortcut, and install-location choice
+- **Portable executable** — runs without a traditional installation
+
+### Linux
+
+Run this on a Linux machine:
 
 ```bash
 npm install
-npm run dev
+npm run dist:linux
 ```
 
-## Build the web renderer
+This creates:
+- **AppImage** — portable application image
+- **.deb package** — installable Debian/Ubuntu package
 
-```bash
-npm run build
-```
+### GitHub Actions builds
+
+Open the repository's **Actions → Build desktop installers → Run workflow** page to build both Windows and Linux packages. A version tag beginning with `v` also triggers the workflow. The resulting files are uploaded as workflow artifacts.
+
+## Connecting multiple people
+
+The desktop installer is the client, not the hosted service. For different people to chat with one another, the ConnectX API and PostgreSQL database must run on a server reachable by everyone. Deploy the API with HTTPS, then enter that server's base URL (for example, `https://chat.example.com`) on each client's sign-in screen.
+
+For a public deployment:
+- Set a strong, unique `JWT_SECRET`.
+- Set a strong `POSTGRES_PASSWORD`.
+- Set `WEB_ORIGIN` to the exact web origins you intend to allow.
+- Put the API behind HTTPS using a reverse proxy or hosting platform.
+- Back up the PostgreSQL volume.
+- Do not expose PostgreSQL's port to the public internet.
+
+The local default API address is `http://127.0.0.1:4000`. Remote server addresses must use HTTPS.
+
+## Current limitations
+
+This is an early foundation, not a complete social platform yet:
+- One seeded starter space is available; space creation and invitations are not implemented.
+- Direct messages, friend requests, presence, attachments, voice/video, moderation tools, and admin controls are not implemented.
+- The app currently loads the first space the signed-in user belongs to.
+- Installer builds are not code-signed. Windows may show a SmartScreen warning until a publisher certificate is configured.
+- The backend is not bundled into desktop installers; it must run locally or be hosted separately.
 
 ## Project layout
 
-- `electron/` — desktop main process and preload
-- `src/` — React interface
-- `index.html` — Vite entry point
-
-## Planned milestones
-
-1. Establish the desktop UI and navigation
-2. Add a backend API and database
-3. Implement accounts and profiles
-4. Add spaces, channels, and persistent messaging
-5. Add friends, direct messages, and real-time presence
-6. Add moderation, privacy controls, and packaging for Windows/Linux
-
-## Design direction
-
-ConnectX uses an original visual identity: compact navigation, restrained purple accents, clean typography, and a calm dark interface. It takes inspiration from community chat apps without copying their branding or exact layout.
+- `electron/` — Electron desktop shell
+- `src/` — React interface and API/socket client
+- `server/` — Express API and Socket.IO server
+- `prisma/` — PostgreSQL schema, migration, and starter seed
+- `.github/workflows/` — Windows and Linux desktop build workflow
+- `docker-compose.yml` — local PostgreSQL and API services
