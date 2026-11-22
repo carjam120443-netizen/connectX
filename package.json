@@ -17,7 +17,8 @@
     "preview": "vite preview",
     "dist:win": "npm run build && electron-builder --win nsis portable",
     "dist:linux": "npm run build && electron-builder --linux AppImage deb",
-    "dist": "npm run build && electron-builder"
+    "dist": "npm run build && electron-builder",
+    "dev:desktop": "concurrently -k \"vite --host 127.0.0.1\" \"wait-on http://127.0.0.1:5173 && electron .\""
   },
   "dependencies": {
     "@prisma/client": "^6.16.1",
@@ -58,8 +59,18 @@
     ],
     "win": {
       "target": [
-        { "target": "nsis", "arch": ["x64"] },
-        { "target": "portable", "arch": ["x64"] }
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
       ]
     },
     "nsis": {
@@ -74,8 +85,18 @@
     },
     "linux": {
       "target": [
-        { "target": "AppImage", "arch": ["x64"] },
-        { "target": "deb", "arch": ["x64"] }
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        }
       ],
       "category": "Network;Chat"
     }
