@@ -1,9 +1,14 @@
 import { io } from "socket.io-client";
 
-export const API_BASE = (import.meta.env.VITE_API_URL || "http://127.0.0.1:4000").replace(/\/$/, "");
+const DEFAULT_API_BASE = (import.meta.env.VITE_API_URL || "http://127.0.0.1:4000").replace(/\/$/, "");
+
+export function getApiBase() {
+  if (typeof window === "undefined") return DEFAULT_API_BASE;
+  return (localStorage.getItem("connectx_api_url") || DEFAULT_API_BASE).replace(/\/$/, "");
+}
 
 export async function api(path, { token, ...options } = {}) {
-  const response = await fetch(`${API_BASE}${path}`, {
+  const response = await fetch(`${getApiBase()}${path}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -17,5 +22,5 @@ export async function api(path, { token, ...options } = {}) {
 }
 
 export function connectSocket(token) {
-  return io(API_BASE, { auth: { token }, transports: ["websocket", "polling"] });
+  return io(getApiBase(), { auth: { token }, transports: ["websocket", "polling"] });
 }
