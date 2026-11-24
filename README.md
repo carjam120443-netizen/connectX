@@ -24,6 +24,10 @@ ConnectX is an original, desktop-first community chat app for Windows and Linux.
 - Linux AppImage and Debian package build targets
 - GitHub Actions workflow to build desktop packages
 
+## Built in the open
+
+ConnectX is still an early project, and bugs are part of building something new. If something breaks, please report it through the repository's **Issues** tab with steps to reproduce and any relevant error messages. I try to keep up with feedback and respond to reports across my projects as soon as I can.
+
 ## Requirements
 
 - Node.js 22.12+ recommended
@@ -159,6 +163,7 @@ This is an early foundation, not a complete social platform yet:
 - `prisma/` — PostgreSQL schema, migration, and starter seed
 - `.github/workflows/` — Windows and Linux desktop build workflow
 - `docker-compose.yml` — local PostgreSQL and API services
-- ## goals ##
-- [x] start release packages
 
+## Goals
+
+- [x] Start release packages
